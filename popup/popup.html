@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+	<head>
+		<script type="application/javascript" src="background.js"></script>
+		<style>
+			a {
+				text-decoration: none;
+			}
+			.price {
+				font-size: 20px;
+				font-weight: bold;
+			}
+			.ref-name {
+				font-size: 16px;
+			}
+		</style>
+	</head>
+	<body>
+		<b>HSI-DW28 Checker</b> 
+		<a href='https://github.com/bingli224/hsi-dw28-checker' target='_blank' title="https://github.com/bingli224/hsi-dw28-checker">&#128279;</a>
+		<a href='mailto:bingli224@gmail.com' target='_blank' title='bingli224@gmail.com'>&#128233;</a>
+		<!--p>Compare the price in investing.com and underlying price in thaidw.com</p-->
+		<!--
+			Icon ref: https://www.flaticon.com/free-icon-font/chat-arrow-grow_5528021?related_id=5528021
+		-->
+		<br><br>
+		<table style="border: 0px solid; width: 100%"><tr><td>
+			<div id="result"><i style="color: #cc0000">Loading...</i></div>
+		</td></tr></table>
+		<br><div id="result-dt"></div>
+		<br>Ref: <span id="ref"></span>
+
+		<script src="popup.js" type="module"></script>
+	</body>
+</html>
