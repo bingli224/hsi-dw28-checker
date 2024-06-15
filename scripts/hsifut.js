@@ -1,5 +1,5 @@
 const URL_INVESTING_COM = 'https://www.investing.com/indices/hong-kong-40-futures'
-const URL_DW28 = 'https://www.thaidw.com/LiveIndexJSON?ric=HSI'
+const URL_DW28 = 'https://www.thaidw.com/apimqth/LiveIndexJSON?ric=HSI'
 const URL_HKEX = 'https://www.hkex.com.hk/Market-Data/Futures-and-Options-Prices/Equity-Index/Hang-Seng-Index-Futures-and-Options?sc_lang=en#&product=HSI'
 const URL_HKEX_JSON = 'https://www1.hkex.com.hk/hkexwidget/data/getderivativesfutures?lang=eng&ats=HSI&type=0&qid=1692728093333&callback=j&_=1692728091419&token='
 
@@ -59,9 +59,17 @@ async function getHSIFutSeriesMonthFromInvesting () {
 async function getHSIFutSeriesMonthFromDW28 () {
 	var res = await fetch(URL_DW28)
 	if (res.ok) {
-		res = await res.json()
-		console.log("getHSIFutSeriesMonthFromDW28(): " + JSON.stringify(res))
-		return res.month
+		try {
+			res = await res.json()
+			console.log("getHSIFutSeriesMonthFromDW28(): " + JSON.stringify(res))
+			return res.month
+		} catch (e) {
+			console.log("getHSIFutSeriesMonthFromDW28(): err=" + JSON.stringify(e))
+			console.log("getHSIFutSeriesMonthFromDW28(): log=" + res)
+		}
+	} else {
+		res = await res.text()
+		console.log("getHSIFutSeriesMonthFromDW28(): err=" + JSON.stringify(res))
 	} 
 }
 
@@ -149,8 +157,10 @@ async function getHSIFutSeriesPrices (token) {
  * @returns True if HSI future series in investing.com and in dw28 are similar.
  */
 export async function checkDW28HSISeries() {
-	const dw28SeriesMonth = await getHSIFutSeriesMonthFromDW28()
-	const investingSeriesMonth = await getHSIFutSeriesMonthFromInvesting()
+	const [dw28SeriesMonth, investingSeriesMonth] = await Promise.all([
+		getHSIFutSeriesMonthFromDW28(),
+		getHSIFutSeriesMonthFromInvesting()
+	])
 	return (dw28SeriesMonth.substring(0, 3) !== investingSeriesMonth.substring(0, 3))
 }
 
@@ -175,11 +185,14 @@ export async function checkDW28HSISeries() {
  * @returns comparison result in object type.
  */
 export async function getHSIFutSeries() {
-	const dw28SeriesMonth = await getHSIFutSeriesMonthFromDW28()
-	const investingSeriesMonth = await getHSIFutSeriesMonthFromInvesting()
-
-	const token = await getHKEXWebToken()
-	const series = await getHSIFutSeriesPrices(token)
+	const [dw28SeriesMonth, investingSeriesMonth, series] = await Promise.all([
+		getHSIFutSeriesMonthFromDW28(),
+		getHSIFutSeriesMonthFromInvesting(),
+		(async () => {
+			const token = await getHKEXWebToken()
+			return await getHSIFutSeriesPrices(token)
+		})()
+	])
 	
 	console.log("checkDW28HSISeries(): HSI series=" + JSON.stringify(series, null, 4))
 		
@@ -199,5 +212,4 @@ export async function getHSIFutSeries() {
 			'link': URL_INVESTING_COM,
 		}
 	}
-
 }

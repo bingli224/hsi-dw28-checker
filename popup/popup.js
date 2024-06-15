@@ -1,9 +1,13 @@
 import {getHSIFutSeries, getRefs} from "../scripts/hsifut.js"
 
-const res = await getHSIFutSeries()
 var html = '<table>'
-for (var k in res) {
-	html += '<tr><td class="ref-name"><a href="' + res[k].link + '" target="_blank">' + k + '</a></td><td class="price">' + res[k].price + '</td></tr>'
+try {
+	const res = await getHSIFutSeries()
+	for (var k in res) {
+		html += '<tr><td class="ref-name"><a href="' + res[k].link + '" target="_blank">' + k + '</a></td><td class="price">' + res[k].price + '</td></tr>'
+	}
+} catch (e) {
+	html += '<pre><tr><td class="ref-name">' + e + '</pre></td></tr>'
 }
 html += '</table>'
 

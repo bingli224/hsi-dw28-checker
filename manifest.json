@@ -3,7 +3,7 @@
 
   "name": "HSI-DW28 Checker",
   "description": "Compare current HSI futures series for Settrade DW28 and investing.com stream.",
-  "version": "1.0",
+  "version": "1.1",
   
   "author": {
     "email": "bingli224@gmail.com"
@@ -18,7 +18,6 @@
   "web_accessible_resources": [
     {
       "resources": [
-        "popup/popup.htm",
         "popup/popup.js"
       ],
       "matches": [
@@ -29,6 +28,7 @@
 
   "action": {
     "default_icon": "images/128.png",
+    "default_title": "HSI-DW28 Checker",
     "default_popup": "popup/popup.html"
   },
   "host_permissions": [
